@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Math Game</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <link rel="stylesheet" href="math_style.css">
+    </head>
+    
+    <body>
+        <div id="container">
+            <div id="score">
+                Score:<span id="scoreValue"> 0</span>
+            </div>
+            <div id="correct">
+                Correct
+            </div>
+            <div id="wrong">
+                Try Again
+            </div>
+            <div id="Question_box">
+            </div>
+            <div id="Instuction">
+                Click on the CORRECT answer
+            </div>
+            <div id="choices">
+                <div id="box1" class="box"></div>
+                <div id="box2" class="box"></div>
+                <div id="box3" class="box"></div>
+                <div id="box4" class="box"></div>
+            </div>
+            <div id="start">
+                Start Game
+            </div>
+            <div id="timeremaining">
+                Time remaining: <span id="timeremain">60</span> sec
+            </div>
+            <div id="gameover">
+            </div>
+        </div>
+        <script>
+            //javascript.js
+var playing  = false;
+var score;
+var action;
+var timeRemain;
+var correctAnswer;
+//if we click on the start/reset
+document.getElementById("start").onclick = function () {
+    
+    //if we are playing
+    
+    if (playing == true){
+        
+        location.reload(); //reloads the page for game
+    }else{
+        
+         //if we are not playing
+            //set score to zero
+        playing = true;
+        score = 0;
+        timeRemain = 60;
+        document.getElementById("scoreValue").innerHTML= score;
+       //show countdown box
+        document.getElementById("timeremaining").style.display= "block";
+        document.getElementById("timeremain").innerHTML = timeRemain;
+        //change button to reset
+        document.getElementById("start").innerHTML = "Reset Game";
+        document.getElementById("gameover").style.display = "none";
+        //start the countdown
+        startCountdown();
+        
+        //Generate new Q&A
+        
+        generateQA();
+        
+    }
+    
+}
+//clicking on a answer box
+
+
+//if we click on answer box
+    //if we are playing
+        //correct?
+            //yes
+                //increase the score        
+                //show correct box for 1sec
+            //no
+                //show try again box for 1sec
+
+
+
+// ALL THE FUNCTIONS
+
+function startCountdown(){
+    action = setInterval(function(){
+        timeRemain -=1;
+    document.getElementById("timeremain").innerHTML = timeRemain;
+        if (timeRemain == 0){
+            //Game Over
+            clearInterval(action);
+            document.getElementById("gameover").style.display = "block";
+            document.getElementById("gameover").innerHTML = "<p>GAME OVER</p><p>Youre score is:  "+ score + "</p>";
+            
+            document.getElementById("timeremaining").style.display = "none";
+           
+            playing = false;
+            
+        }
+                         }, 1000);
+    
+}
+            
+for(j=1;j<5;j++){
+    document.getElementById("box"+j).onclick = function(){
+    //if we are playing
+    
+    if(playing == true){
+        if(this.innerHTML == correctAnswer){
+            score++;
+            document.getElementById("scoreValue").innerHTML = score;
+           //hide wrong box and show correct box
+            document.getElementById("correct").style.display = "block";
+            document.getElementById("wrong").style.display = "none";
+            setTimeout(function(){
+                document.getElementById("correct").style.display = "none";
+            },1000);
+            
+            //if answer is correct the generate the next question
+            generateQA();
+            
+        }else{
+            //wrong answer
+             document.getElementById("wrong").style.display = "block";
+            document.getElementById("correct").style.display = "none";
+            setTimeout(function(){
+                document.getElementById("wrong").style.display = "block";
+            },1000);
+         }
+     }
+  }
+
+}
+
+function generateQA (){
+    var x = Math.round(Math.random()*9 +1);
+    var y = Math.round(Math.random()*9 +1);
+    correctAnswer = x * y; 
+    document.getElementById("Question_box").innerHTML = x + "x" + y;
+    var correctPosition = Math.round(Math.random()*3 + 1);
+   //fill one box by correct ans
+    document.getElementById("box"+correctPosition).innerHTML = correctAnswer;
+    // fill all the other boxes with wrong ans and check if we don't change the coorect generated box
+    
+    var answers = [correctAnswer];
+    for(var i=1;i<5;i++){
+        if(i != correctPosition ){
+            var wrongAnswer;
+            do{
+                wrongAnswer = Math.round(Math.random()*9) * (Math.round(Math.random()*9) + 1);
+            }
+            while(answers.indexOf(wrongAnswer) > -1)
+                answers.push(wrongAnswer);            
+            document.getElementById("box"+i).innerHTML = wrongAnswer; 
+        }
+    }
+    
+}
+        </script>
+    </body>
+</html>
